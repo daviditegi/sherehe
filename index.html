@@ -93,7 +93,7 @@ if(!photo){say("Add a profile photo to continue.");return}if(!n){say("Add your n
 var b=this;b.disabled=true;var t=TOWNS[$("#t").value],blob=await(await fetch(photo)).blob(),path=U.id+"/avatar.jpg";
 var up=await sb.storage.from("avatars").upload(path,blob,{upsert:true,contentType:"image/jpeg"});if(up.error){say(up.error.message);b.disabled=false;return}
 var url=sb.storage.from("avatars").getPublicUrl(path).data.publicUrl+"?v="+Date.now();
-var pr=await sb.from("profiles").upsert({id:U.id,name:n,username:u,gender:$("#g").value,photo_url:url,drink:$("#dr").value,party_type:$("#ty").value,town:$("#t").value},{onConflict:"id"});
+var row={name:n,username:u,gender:$("#g").value,photo_url:url,drink:$("#dr").value,party_type:$("#ty").value,town:$("#t").value};var pr=await sb.from("profiles").insert(Object.assign({id:U.id},row));if(pr.error&&pr.error.code=="23505"&&/pkey/.test(pr.error.message))pr=await sb.from("profiles").update(row).eq("id",U.id);
 if(pr.error){say(pr.error.code=="23505"&&/username/.test(pr.error.message)?"That username is taken. Try another.":pr.error.message);b.disabled=false;return}
 var lo=await sb.from("locations").upsert({id:U.id,lat:gps?gps[0]:t[0],lng:gps?gps[1]:t[1]});if(lo.error){say(lo.error.message);b.disabled=false;return}
 boot()}}
