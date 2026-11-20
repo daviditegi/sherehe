@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sherehe – find people to party with near you</title>
+<meta name="theme-color" content="#e8365d">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);--bg:#fff6ec;--card:#fff;--ink:#2a1536;--mute:#7a6a84;--line:#eadbcf;--acc:#e8365d;--acc2:#ff9f1c;--on:#16a34a;--off:#9ca3af}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#170d22;--card:#241535;--ink:#fbeedd;--mute:#a899b5;--line:#3a2750;--on:#4ade80}}
+*,*:before,*:after{box-sizing:inherit}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.45 "Bricolage Grotesque",system-ui,sans-serif}
+h1,h2{margin:0;font-weight:800;letter-spacing:-.02em}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
+#app{max-width:560px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+header{padding:14px 16px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.logo{font-size:26px;font-weight:800;color:var(--acc)}.sub{color:var(--mute);font-size:13px}
+main{flex:1;overflow-y:auto;padding:4px 16px 16px}
+nav{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;background:none;padding:10px 4px;font-size:12px;color:var(--mute);position:relative}
+nav button b{display:block;font-size:20px;font-weight:400}nav button.on{color:var(--acc);font-weight:800}
+.badge{position:absolute;top:4px;left:55%;background:var(--acc);color:#fff;border-radius:99px;font-size:10px;padding:0 6px}
+.hero{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-radius:20px;padding:22px;margin:12px 0}
+.hero h1{font-size:34px;line-height:1.05}.hero p{margin:8px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.row{display:flex;gap:12px;align-items:center}
+.av{width:46px;height:46px;border-radius:50%;background:var(--acc2);color:#2a1536;display:grid;place-items:center;font-weight:800;position:relative;flex:none}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.dot{position:absolute;right:-1px;bottom:-1px;width:14px;height:14px;border-radius:50%;border:2px solid var(--card);background:var(--off)}.dot.on{background:var(--on)}
+.grow{flex:1;min-width:0}.nm{font-weight:800}.vb{color:#1d9bf0;font-size:12px;font-weight:600}
+.tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:99px;padding:1px 9px;margin:4px 4px 0 0;color:var(--mute)}
+.km{font-weight:800;color:var(--acc);white-space:nowrap}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:800}
+.btn.alt{background:none;color:var(--acc);border:2px solid var(--acc);padding:8px 14px}.btn.w{width:100%}.btn:disabled{opacity:.5}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;font-size:13px}.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h2.sec{font-size:15px;margin:18px 0 0;color:var(--mute)}
+.modal{position:fixed;inset:0;background:#0009;display:grid;align-items:end;z-index:9}
+.sheet{background:var(--card);border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));max-width:560px;width:100%;margin:0 auto}
+.msgs{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.m{max-width:78%;padding:8px 12px;border-radius:16px;background:var(--card);border:1px solid var(--line);overflow-wrap:anywhere}.m.me{align-self:flex-end;background:var(--acc);color:#fff;border-color:var(--acc)}
+.bar{display:flex;gap:8px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--card)}
+.note{font-size:12px;color:var(--mute);margin-top:10px}.err{color:#d11a3f;font-size:13px;margin-top:8px}
+.empty{text-align:center;color:var(--mute);padding:30px 10px}
+.pv{width:96px;height:96px;border-radius:50%;background:var(--bg);border:2px dashed var(--line);display:grid;place-items:center;font-size:30px;overflow:hidden;margin:4px auto 10px}.pv img{width:100%;height:100%;object-fit:cover}
+.fl{display:inline-block;width:auto;margin:0 4px 0 0;font-size:14px;cursor:pointer;text-align:center}
+video{width:100%;border-radius:16px;background:#000;transform:scaleX(-1);margin:8px 0}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;z-index:20;font-size:14px}
+</style></head>
+<body><div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ===== 1. Paste your Supabase values (Project Settings > API). The anon key is safe to be public. ===== */
+var CFG={URL:"https://qlrybugptorlmosgimzx.supabase.co",KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFscnlidWdwdG9ybG1vc2dpbXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxMjg0ODIsImV4cCI6MjExMDcwNDQ4Mn0.U1qxofhx3s8Xeux8nK0IUISbqSgmrfikjl3P6nccpVs"};
+/* ===== */
+var TOWNS={Naivasha:[-0.7172,36.431],Nairobi:[-1.2864,36.8172],Nakuru:[-0.3031,36.08],Gilgil:[-0.4968,36.3197],Mombasa:[-4.0435,39.6682],Kisumu:[-0.0917,34.768],Eldoret:[0.5143,35.2698],Thika:[-1.0333,37.0693],Nyeri:[-0.4201,36.9476],Machakos:[-1.5177,37.2634],Malindi:[-3.2192,40.1169],Narok:[-1.0783,35.8601],Kisii:[-0.6817,34.7667],Meru:[0.047,37.6498],Embu:[-0.5389,37.4596]};
+var TYPES=["House party","Clubbing","Event","Wedding","Just chilling"];
+var DRINKS=["Beer","Tusker","Whisky","Vodka","Gin","Wine","Cocktails","Soda / no alcohol"];
+var sb,U,me,tab="near",filt="All",onlyOn=false,list=[],unl={},chatId=null,msgs=[],timers=[];
+function $(s){return document.querySelector(s)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function opts(a,sel){return a.map(function(x){return"<option"+(x==sel?" selected":"")+">"+x+"</option>"}).join("")}
+function dist(d){return d<1?"under 1 km":Math.round(d)+" km"}
+function head(s){return'<header><div><div class="logo">sherehe 🎉</div><div class="sub">'+esc(s||"")+'</div></div></header>'}
+function toast(t){var d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2500)}
+function say(t){var e=$("#err");if(e)e.textContent=t}
+function normPhone(v){var d=v.replace(/[^\d+]/g,"");if(/^0[17]\d{8}$/.test(d))return"+254"+d.slice(1);if(/^254[17]\d{8}$/.test(d))return"+"+d;if(/^\+254[17]\d{8}$/.test(d))return d;return null}
+function myPhone(){var p=U&&U.phone||"";return p?(p[0]=="+"?p:"+"+p):""}
+function shrink(f,cb){var r=new FileReader();r.onload=function(){var i=new Image();i.onload=function(){var s=Math.min(i.width,i.height),c=document.createElement("canvas");c.width=c.height=320;c.getContext("2d").drawImage(i,(i.width-s)/2,(i.height-s)/2,s,s,0,0,320,320);cb(c.toDataURL("image/jpeg",.75))};i.src=r.result};r.readAsDataURL(f)}
+function av(p,on){return'<div class="av">'+(p.photo?'<img alt="" src="'+esc(p.photo)+'">':esc((p.name||"?")[0]))+'<span class="dot'+(on?" on":"")+'"></span></div>'}
+
+/* ---------- Sign in with phone code ---------- */
+function authScreen(){
+$("#app").innerHTML=head("Find your people. Party.")+'<main><div class="hero"><h1>Who’s up for sherehe near you?</h1><p>Share where you are, what you’re drinking and the party you want. See who’s close and say hi.</p></div><div class="card"><label for="ph0">Phone number</label><input id="ph0" inputmode="tel" placeholder="07XX XXX XXX"><p class="err" id="err"></p><button class="btn w" id="go" style="margin-top:12px">Send code</button><p class="note">We text you a 6-digit code. Your number stays private. Others never see it unless you send it in a chat.</p></div></main>';
+$("#go").onclick=async function(){var p=normPhone($("#ph0").value);if(!p){say("Enter a valid Kenyan number, like 0712345678.");return}this.disabled=true;var r=await sb.auth.signInWithOtp({phone:p});if(r.error){say(r.error.message);this.disabled=false;return}otpScreen(p)}}
+function otpScreen(p){var cd=30,tm;
+$("#app").innerHTML=head()+'<main><div class="card"><h2>Confirm your number</h2><p class="sub">Enter the 6-digit code we sent to <b>'+esc(p.slice(0,6)+" *** "+p.slice(-3))+'</b>.</p><label for="oc">Code</label><input id="oc" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456"><p class="err" id="err"></p><button class="btn w" id="ov" style="margin-top:12px">Verify</button><button class="btn alt w" id="or" style="margin-top:8px" disabled></button><button class="btn alt w" id="ob" style="margin-top:8px">Wrong number? Go back</button></div></main>';
+function tick(){var b=$("#or");if(!b)return;b.disabled=cd>0;b.textContent=cd>0?"Resend code in "+cd+"s":"Resend code";if(cd>0)tm=setTimeout(function(){cd--;tick()},1000)}tick();
+$("#ov").onclick=async function(){var v=$("#oc").value.trim();if(!/^\d{6}$/.test(v)){say("Enter the 6-digit code.");return}this.disabled=true;var r=await sb.auth.verifyOtp({phone:p,token:v,type:"sms"});if(r.error){say("That code is wrong or has expired.");this.disabled=false;return}clearTimeout(tm);U=r.data.user;boot()};
+$("#or").onclick=async function(){var r=await sb.auth.signInWithOtp({phone:p});say(r.error?r.error.message:"New code sent.");cd=30;tick()};
+$("#ob").onclick=function(){clearTimeout(tm);authScreen()}}
+
+/* ---------- Profile + photo ---------- */
+function onboard(){var photo=null,gps=null;
+$("#app").innerHTML=head("Set up your profile")+'<main><div class="card"><div class="pv" id="pv">📷</div><div style="text-align:center"><label class="btn alt fl">Take photo<input class="pf" type="file" accept="image/*" capture="user" hidden></label><label class="btn alt fl">Upload photo<input class="pf" type="file" accept="image/*" hidden></label></div><label for="n">Name</label><input id="n" maxlength="20" placeholder="Your first name"><label for="u">Username</label><input id="u" maxlength="20" placeholder="e.g. kev_nai"><label for="g">Gender</label><select id="g">'+opts(["Female","Male","Other"])+'</select><label for="t">Where are you?</label><select id="t">'+opts(Object.keys(TOWNS),"Naivasha")+'</select><button class="btn alt w" style="margin-top:8px" id="gps">📍 Use my exact location</button><label for="dr">What are you drinking?</label><select id="dr">'+opts(DRINKS)+'</select><label for="ty">Party you want</label><select id="ty">'+opts(TYPES)+'</select><p class="err" id="err"></p><button class="btn w" id="go" style="margin-top:12px">Continue to photo check</button><p class="note">Others only see your photo, name, username and gender, plus how far away you are.</p></div></main>';
+document.querySelectorAll(".pf").forEach(function(i){i.onchange=function(){if(i.files[0])shrink(i.files[0],function(u){photo=u;$("#pv").innerHTML='<img alt="Your photo" src="'+u+'">'})}});
+$("#gps").onclick=function(){if(!navigator.geolocation){say("Location isn’t available. Pick your town instead.");return}navigator.geolocation.getCurrentPosition(function(p){gps=[p.coords.latitude,p.coords.longitude];$("#gps").textContent="📍 Location set";say("")},function(){say("We couldn’t get your location. Pick your town instead.")})};
+$("#go").onclick=async function(){var n=$("#n").value.trim(),u=$("#u").value.trim().replace(/^@/,"");
+if(!photo){say("Add a profile photo to continue.");return}if(!n){say("Add your name.");return}if(!/^[A-Za-z0-9_]{3,20}$/.test(u)){say("Username must be 3 to 20 letters, numbers or underscores.");return}
+var b=this;b.disabled=true;var t=TOWNS[$("#t").value],blob=await(await fetch(photo)).blob(),path=U.id+"/avatar.jpg";
+var up=await sb.storage.from("avatars").upload(path,blob,{upsert:true,contentType:"image/jpeg"});if(up.error){say(up.error.message);b.disabled=false;return}
+var url=sb.storage.from("avatars").getPublicUrl(path).data.publicUrl+"?v="+Date.now();
+var pr=await sb.from("profiles").insert({id:U.id,name:n,username:u,gender:$("#g").value,photo_url:url,drink:$("#dr").value,party_type:$("#ty").value,town:$("#t").value});
+if(pr.error){say(pr.error.code=="23505"?"That username is taken. Try another.":pr.error.message);b.disabled=false;return}
+var lo=await sb.from("locations").upsert({id:U.id,lat:gps?gps[0]:t[0],lng:gps?gps[1]:t[1]});if(lo.error){say(lo.error.message);b.disabled=false;return}
+boot()}}
+
+/* ---------- Selfie check (demo: always passes) ---------- */
+function selfie(){var P=["Hold up two fingers","Give a thumbs up","Smile and tilt your head left","Touch your nose"],pr=P[Math.floor(Math.random()*P.length)],stream=null;
+$("#app").innerHTML=head()+'<main><div class="card"><h2>Verify it’s really you</h2><p class="sub">Take a live selfie while you do this: <b>'+pr+'</b>.</p><video id="vd" autoplay playsinline muted></video><p class="err" id="err"></p><button class="btn w" id="sn">Take selfie</button><label class="btn alt w fl" style="margin-top:8px;display:block">Use phone camera instead<input id="vf" type="file" accept="image/*" capture="user" hidden></label><p class="note">Demo check: your selfie is not stored or compared yet. See the README to add real face matching.</p></div></main>';
+function stop(){if(stream)stream.getTracks().forEach(function(t){t.stop()})}
+async function done(){stop();$("#app").innerHTML=head()+'<main><div class="empty"><div style="font-size:40px">🔍</div><b>Checking your selfie…</b></div></main>';await new Promise(function(r){setTimeout(r,2000)});var r=await sb.rpc("demo_verify");if(r.error){toast(r.error.message);return}boot()}
+function nocam(){$("#vd").style.display="none";$("#sn").style.display="none";say("We can’t open your camera. Allow camera access, or use the phone camera button.")}
+if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}).then(function(s){stream=s;$("#vd").srcObject=s}).catch(nocam);else nocam();
+$("#sn").onclick=function(){if(!$("#vd").videoWidth){say("The camera isn’t ready yet. Wait a second and try again.");return}done()};
+$("#vf").onchange=function(){if(this.files[0])done()}}
+
+/* ---------- App ---------- */
+async function boot(){var r=await sb.from("profiles").select("*").eq("id",U.id).maybeSingle();me=r.data;if(!me){onboard();return}if(!me.verified){selfie();return}start()}
+async function start(){await Promise.all([loadList(),loadUnl()]);beat();
+timers.push(setInterval(beat,30000),setInterval(async function(){await loadList();if(!chatId&&!$(".modal")&&document.visibilityState=="visible")render()},60000));listen();render()}
+function beat(){sb.rpc("heartbeat")}
+async function loadList(){var r=await sb.rpc("nearby");list=(r.data||[]).map(function(p){return{id:p.id,name:p.name,user:p.username,g:p.gender,photo:p.photo_url,drink:p.drink,type:p.party_type,town:p.town,on:p.online,d:p.distance_km}})}
+async function loadUnl(){var r=await sb.from("unlocks").select("payer,other");unl={};(r.data||[]).forEach(function(u){unl[u.payer==U.id?u.other:u.payer]=1})}
+function listen(){sb.channel("msgs").on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:"receiver=eq."+U.id},async function(e){var m=e.new;if(!unl[m.sender])await loadUnl();if(chatId==m.sender){msgs.push(m);chatView()}else toast("New message")}).subscribe()}
+function person(p){return'<div class="card"><div class="row">'+av(p,p.on)+'<div class="grow"><div class="nm">'+esc(p.name)+' <span class="vb" title="Photo verified">✔</span> <span class="sub">@'+esc(p.user)+'</span></div><div class="sub">'+esc(p.g)+' · '+(p.on?"Online now":"Offline")+'</div><span class="tag">🍺 '+esc(p.drink)+'</span><span class="tag">'+esc(p.type)+'</span></div><div class="km">'+dist(p.d)+'</div></div><button class="btn w" style="margin-top:10px" data-chat="'+p.id+'">'+(unl[p.id]?"Open chat":"Chat · KSh 20")+'</button></div>'}
+function near(){var l=list.filter(function(p){return(filt=="All"||p.type==filt)&&(!onlyOn||p.on)}),a=l.filter(function(p){return p.d<=50}),b=l.filter(function(p){return p.d>50});
+return'<div class="chips">'+["All"].concat(TYPES).map(function(t){return'<button class="chip'+(t==filt?" on":"")+'" data-f="'+t+'">'+t+'</button>'}).join("")+'<button class="chip'+(onlyOn?" on":"")+'" data-on="1">🟢 Online only</button></div><h2 class="sec">Near '+esc(me.town)+' (within 50 km)</h2>'+(a.length?a.map(person).join(""):'<div class="empty">No one close by matches yet. Check back soon or change the filters.</div>')+'<h2 class="sec">Across Kenya</h2>'+(b.length?b.map(person).join(""):'<div class="empty">Nobody else matches these filters.</div>')}
+function alerts(){var l=list.filter(function(p){return p.on}).slice(0,10);return'<h2 class="sec">Active now, closest first</h2>'+(l.length?l.map(function(p){return'<div class="card row">'+av(p,1)+'<div class="grow"><b>'+esc(p.name)+'</b> wants a <b>'+esc((p.type||"").toLowerCase())+'</b> with '+esc((p.drink||"").toLowerCase())+'.<div class="sub">'+dist(p.d)+' away · '+esc(p.town)+'</div></div><button class="btn alt" data-chat="'+p.id+'">Chat</button></div>'}).join(""):'<div class="empty">Nobody is online right now.</div>')}
+function chats(){var l=list.filter(function(p){return unl[p.id]});return l.length?l.map(function(p){return'<div class="card row" data-chat="'+p.id+'" style="cursor:pointer">'+av(p,p.on)+'<div class="grow"><div class="nm">'+esc(p.name)+'</div><div class="sub">Tap to chat</div></div></div>'}).join(""):'<div class="empty"><div style="font-size:40px">💬</div>No chats yet. Unlock a chat for KSh 20 from the Near me list.</div>'}
+function meTab(){return'<div class="card"><div class="row">'+av({name:me.name,photo:me.photo_url},me.show_online)+'<div><div class="nm">'+esc(me.name)+' <span class="vb">✔ Verified</span> <span class="sub">@'+esc(me.username)+'</span></div><div class="sub">'+esc(me.gender)+'</div></div></div><div class="sub" style="margin-top:10px">📞 '+esc(myPhone())+' (private)</div><label for="mt">Location</label><select id="mt">'+opts(Object.keys(TOWNS),me.town)+'</select><label for="md">Drink</label><select id="md">'+opts(DRINKS,me.drink)+'</select><label for="my">Party you want</label><select id="my">'+opts(TYPES,me.party_type)+'</select><button class="btn w" style="margin-top:14px" id="tog">'+(me.show_online?"🟢 Showing as online. Tap to hide":"⚪ Hidden. Tap to show as online")+'</button><button class="btn alt w" style="margin-top:8px" id="out">Sign out</button></div>'}
+function render(){
+if(chatId){chatView();return}
+var old=$("main"),sc=old?old.scrollTop:0,ac=list.filter(function(p){return p.on}).length;
+var body=tab=="near"?near():tab=="alerts"?alerts():tab=="chats"?chats():meTab();
+var nv=[["near","📍","Near me"],["alerts","🔔","Alerts"],["chats","💬","Chats"],["me","🙂","Me"]].map(function(t){return'<button data-tab="'+t[0]+'" class="'+(tab==t[0]?"on":"")+'"><b>'+t[1]+'</b>'+t[2]+(t[0]=="alerts"&&tab!="alerts"&&ac?'<span class="badge">'+ac+'</span>':"")+'</button>'}).join("");
+$("#app").innerHTML=head("You’re in "+me.town)+'<main>'+body+'</main><nav>'+nv+'</nav>';$("main").scrollTop=sc;
+document.querySelectorAll("[data-tab]").forEach(function(b){b.onclick=function(){tab=b.dataset.tab;render()}});
+document.querySelectorAll("[data-f]").forEach(function(b){b.onclick=function(){filt=b.dataset.f;render()}});
+document.querySelectorAll("[data-on]").forEach(function(b){b.onclick=function(){onlyOn=!onlyOn;render()}});
+document.querySelectorAll("[data-chat]").forEach(function(b){b.onclick=function(){openChat(b.dataset.chat)}});
+if(tab=="me"){
+$("#mt").onchange=async function(){var t=TOWNS[this.value];var a=await sb.from("profiles").update({town:this.value}).eq("id",U.id),b=await sb.from("locations").upsert({id:U.id,lat:t[0],lng:t[1]});if(a.error||b.error){toast("Couldn’t save. Try again.");return}me.town=this.value;await loadList();render()};
+$("#md").onchange=async function(){var r=await sb.from("profiles").update({drink:this.value}).eq("id",U.id);if(!r.error)me.drink=this.value};
+$("#my").onchange=async function(){var r=await sb.from("profiles").update({party_type:this.value}).eq("id",U.id);if(!r.error)me.party_type=this.value};
+$("#tog").onclick=async function(){var v=!me.show_online,r=await sb.from("profiles").update({show_online:v}).eq("id",U.id);if(!r.error){me.show_online=v;render()}};
+$("#out").onclick=async function(){timers.forEach(clearInterval);await sb.auth.signOut();location.reload()}}}
+async function openChat(id){if(unl[id]){chatId=id;var r=await sb.from("messages").select("*").or("and(sender.eq."+U.id+",receiver.eq."+id+"),and(sender.eq."+id+",receiver.eq."+U.id+")").order("created_at");msgs=r.data||[];chatView()}else payModal(id)}
+function payModal(id){var p=list.find(function(x){return x.id==id}),d=document.createElement("div");d.className="modal";
+d.innerHTML='<div class="sheet"><h2>Chat with '+esc(p.name)+'</h2><p class="sub">Pay KSh 20 once to unlock this chat and swap contacts.</p><label for="ph">M-Pesa number</label><input id="ph" inputmode="tel" value="'+esc(myPhone())+'" placeholder="07XX XXX XXX"><p class="err" id="pe"></p><button class="btn w" id="pay" style="margin-top:12px">Pay KSh 20 with M-Pesa</button><button class="btn alt w" style="margin-top:8px" id="cx">Not now</button><p class="note">Demo payment: no money is charged yet. Real M-Pesa is coming soon.</p></div>';document.body.appendChild(d);
+$("#cx").onclick=function(){d.remove()};
+$("#pay").onclick=async function(){if(!normPhone($("#ph").value)){$("#pe").textContent="Enter a valid Safaricom or Airtel number, like 0712345678.";return}this.disabled=true;this.textContent="Check your phone and enter your M-Pesa PIN…";await new Promise(function(r){setTimeout(r,2500)});
+var r=await sb.rpc("demo_pay",{other_id:id});if(r.error){$("#pe").textContent=r.error.message;this.disabled=false;this.textContent="Pay KSh 20 with M-Pesa";return}unl[id]=1;d.remove();openChat(id)}}
+function chatView(){var p=list.find(function(x){return x.id==chatId})||{name:"Chat",on:false};
+$("#app").innerHTML='<header><button class="btn alt" id="bk">‹ Back</button><div class="row"><div class="nm">'+esc(p.name)+'</div><span class="sub">'+(p.on?"🟢 Online":"⚪ Offline")+'</span></div></header><main><div class="msgs">'+(msgs.length?msgs.map(function(m){return'<div class="m'+(m.sender==U.id?" me":"")+'">'+esc(m.body)+'</div>'}).join(""):'<div class="empty">Chat unlocked. Say hi and agree on where to meet. Stay safe: meet in public first.</div>')+'</div></main><div class="bar"><button class="btn alt" id="sh" aria-label="Send my phone number">📞</button><input id="mi" placeholder="Type a message" aria-label="Message" maxlength="500"><button class="btn" id="sd">Send</button></div>';
+var mn=$("main");mn.scrollTop=mn.scrollHeight;
+$("#bk").onclick=function(){chatId=null;tab="chats";render()};
+async function send(t){t=t.trim();if(!t)return;var r=await sb.from("messages").insert({sender:U.id,receiver:chatId,body:t}).select().single();if(r.error){toast("Couldn’t send. Try again.");return}msgs.push(r.data);chatView()}
+$("#sd").onclick=function(){send($("#mi").value)};$("#sh").onclick=function(){send("My number: "+myPhone())};
+$("#mi").onkeydown=function(e){if(e.key=="Enter")send(this.value)};$("#mi").focus()}
+
+/* ---------- Start ---------- */
+(async function(){
+if(CFG.URL.indexOf("http")!=0){$("#app").innerHTML=head()+'<main><div class="card"><h2>Almost there</h2><p>Open <b>index.html</b> and paste your Supabase project URL and anon key at the top of the script.</p></div></main>';return}
+sb=supabase.createClient(CFG.URL,CFG.KEY);
+var r=await sb.auth.getSession();if(r.data.session){U=r.data.session.user;boot()}else authScreen()})();
+</script></body></html>
